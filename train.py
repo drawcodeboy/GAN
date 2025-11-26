@@ -47,13 +47,6 @@ def main(cfg):
     if cfg['parallel'] == True:
         model = nn.DataParallel(model)
     
-    # Loss Function
-    if hp_cfg['loss_fn'] == 'BCE':
-        # 이미 Discriminator의 마지막에 Sigmoid가 있으므로, BCEWithLogitsLoss 사용 X
-        loss_fn = nn.BCELoss()
-    else:
-        raise Exception(f"Check loss function in configuration file")
-    
     # Optimizer
     optimizer = None
     if hp_cfg['optim'] == "SGD" and model_cfg['name'] in ['GAN']:
@@ -80,7 +73,7 @@ def main(cfg):
         elapsed_time = int(time.time() - start_time)
         print(f"Train Time: {elapsed_time//60:02d}m {elapsed_time%60:02d}s\n")
         
-        if current_epoch % 10 == 0:
+        if current_epoch % 50 == 0:
             save_model_ckpt(model, save_cfg['name'], current_epoch, save_cfg['weights_path'])
             
         total_g_loss.append(g_loss)
