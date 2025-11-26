@@ -14,9 +14,7 @@ class GAN(nn.Module):
         self.generator = Generator(z_dim=z_dim,
                                    img_dim=img_dim)
         self.discriminator = Discriminator(img_dim=img_dim)
-    
-    def forward(self, x):
-        pass
+        self.img_dim = img_dim
 
     def adv_loss_update(self, x, d_optim, g_optim):
         '''
@@ -34,7 +32,7 @@ class GAN(nn.Module):
         # Maximize log(D(x)) + log(1-D(G(z)))
         # So, minimize -log(D(x)) -log(1-D(G(z)))
         ones = torch.ones(bz, 1).to(x.device)
-        zeros = torch.ones(bz, 1).to(x.device)
+        zeros = torch.zeros(bz, 1).to(x.device)
         d_loss_1 = bce_loss(self.discriminator(x), ones) # -log(D(x))
         d_loss_2 = bce_loss(self.discriminator(x_prime), zeros) # -log(1-D(G(z)))
         d_loss = d_loss_1 + d_loss_2
@@ -50,7 +48,7 @@ class GAN(nn.Module):
         # Generator wants to minimize log(1-D(G(z)))
         # But, It suffers from gradient saturation problem.
         # So, Change the loss function "Maximize log(D(G(z)))"
-        # Finally, If I want to maximize this term, "Minimize -(D(G(z)))"
+        # Finally, If I want to maximize this term, "Minimize -log(D(G(z)))"
         ones = torch.ones(bz, 1).to(x.device)
         g_loss = bce_loss(self.discriminator(x_prime), ones)
 
@@ -61,6 +59,15 @@ class GAN(nn.Module):
         g_optim.step() 
 
         return d_loss.item(), g_loss.item()
+    
+    @torch.no_grad()
+    def generate(self, n_samples:int = 1, device:str = 'cuda:0'):
+        self.eval()
+
+        z = torch.randn(n_samples, self.z_dim).to(device)
+        x_prime = self.generator(z).view(n_samples, *self.img_dim)
+
+        return x_prime
 
     @classmethod
     def from_config(cls, cfg):
@@ -68,14 +75,3 @@ class GAN(nn.Module):
             z_dim=cfg.get('z_dim', 100),
             img_dim=cfg.get('img_dim', (1, 28, 28))
         )
-    
-if __name__ == '__main__':
-    gan = GAN()
-    x = torch.randn((32, 1, 28, 28))
-    z = torch.randn((32, 100))
-    from torch.optim import SGD
-    d_optim = SGD(gan.discriminator.parameters())
-    g_optim = SGD(gan.generator.parameters())
-
-
-    gan.adv_loss_update(x, d_optim, g_optim)
