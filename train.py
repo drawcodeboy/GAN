@@ -58,30 +58,9 @@ def main(cfg):
     optimizer = None
     if hp_cfg['optim'] == "SGD" and model_cfg['name'] in ['GAN']:
         optimizer = {
-            'gen_optim': optim.SGD(model.generator.parameters(), lr=hp_cfg['gen_lr'], momentum=hp_cfg['momentum']),
-            'disc_optim': optim.SGD(model.discriminator.parameters(), lr=hp_cfg['disc_lr'], momentum=hp_cfg['momentum'])
+            'd_optim': optim.SGD(model.discriminator.parameters(), lr=hp_cfg['disc_lr'], momentum=hp_cfg['momentum']),
+            'g_optim': optim.SGD(model.generator.parameters(), lr=hp_cfg['gen_lr'], momentum=hp_cfg['momentum'])
         }
-
-    # Load Scheduler
-    if model_cfg['name'] in ['GAN']:
-        scheduler = {
-            'gen_scheduler': optim.lr_scheduler.ReduceLROnPlateau(optimizer['gen_optim'],
-                                                                   mode='min',
-                                                                   factor=0.5,
-                                                                   patience=5,
-                                                                   min_lr=1e-6),
-            'disc_scheduler': optim.lr_scheduler.ReduceLROnPlateau(optimizer['disc_optim'],
-                                                                    mode='min',
-                                                                    factor=0.5,
-                                                                    patience=5,
-                                                                    min_lr=1e-6)
-        }
-    else:
-        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer,
-                                                        mode='min',
-                                                        factor=0.5,
-                                                        patience=5,
-                                                        min_lr=1e-6)
     
     task_cfg = cfg['task']
     save_cfg = cfg['save']
@@ -98,7 +77,7 @@ def main(cfg):
         
         # Training One Epoch
         start_time = int(time.time())
-        train_loss = train_one_epoch(model, train_dl, loss_fn, optimizer, scheduler, task_cfg, device)
+        train_d_loss, trian_d_loss = train_one_epoch(model, train_dl, optimizer, task_cfg, device)
         elapsed_time = int(time.time() - start_time)
         print(f"Train Time: {elapsed_time//60:02d}m {elapsed_time%60:02d}s\n")
 
