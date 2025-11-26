@@ -1,5 +1,5 @@
-### 1. generate
+### 1. 01_generate
 ```
-python subtasks/generate/exec.py
+python subtasks/01_generate/exec.py
 ```
 * generation 예시
