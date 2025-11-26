@@ -13,7 +13,7 @@ def main():
         'img_dim': (1, 28, 28),
         'z_dim': 100}).to(device)
 
-    ckpt = torch.load("saved/weights/gan.mnist.epochs_050.pth", 
+    ckpt = torch.load("saved/weights/gan.mnist.epochs_100.pth", 
                       map_location=device,
                       weights_only=False)
     model.load_state_dict(ckpt['model'])

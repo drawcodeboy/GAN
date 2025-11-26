@@ -21,11 +21,10 @@ model:
 hyperparameters:
   optim: SGD
   momentum: 0.9
-  gen_lr: 0.0001
-  disc_lr: 0.00005
+  gen_lr: 0.0002
+  disc_lr: 0.00002
   epochs: 200
-  batch_size: 32
-  loss_fn: BCE
+  batch_size: 100
 
 save:
   name: gan.mnist
