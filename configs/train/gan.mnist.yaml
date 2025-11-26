@@ -1,0 +1,33 @@
+title: Train GAN / MNIST
+
+device: &device cuda:0
+parallel: false
+
+task:
+  object: adversarial_learning
+
+data:
+  train:
+    name: MNIST
+    root: data/
+    download: true
+    mode: train
+
+model:
+  name: GAN
+  z_dim: 100
+  img_dim: !!python/tuple [1, 28, 28]
+
+hyperparameters:
+  optim: SGD
+  momentum: 0.9
+  gen_lr: 0.0001
+  disc_lr: 0.00005
+  epochs: 200
+  batch_size: 32
+  loss_fn: BCE
+
+save:
+  name: gan.mnist
+  weights_path: saved/weights
+  loss_path: saved/loss
