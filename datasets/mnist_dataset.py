@@ -12,33 +12,26 @@ class MNIST_Dataset():
         if mode not in ['train', 'val', 'test']:
             raise AssertionError(f"mode 확인: [{mode}]으로 입력 됨")
         
-        self.data = MNIST(root=root,
-                          download=download)
+        if mode not in ['train', 'test']:
+            raise Exception("mode should be 'train' or 'test'")
         
-        self.data=list(self.data)
+        # Train = 60,000 samples, Test = 10,000 samples
+        self.data_li = MNIST(root=root,
+                             download=download,
+                             train=True if mode=='train' else False)
         
-        train_size = 8000
-        val_size = 0
-        test_size = 2000
-        
-        if mode == 'train':
-            self.data = self.data[:train_size]
-        elif mode =='val':
-            self.data = self.data[train_size:train_size+val_size]
-        elif mode == 'test':
-            self.data = self.data[train_size+val_size:]
+        self.data_li = list(self.data_li)
         
     def __len__(self):
-        return len(self.data)
+        return len(self.data_li)
     
     def __getitem__(self, idx):
-        image, _ = self.data[idx]
-        
+        image, _ = self.data_li[idx]
+
         image = np.array(image.getdata()).reshape(28, 28).astype(np.float32)
         image /= 255.
-
         image = torch.tensor(image, dtype=torch.float32).unsqueeze(0)
-        
+
         return image
     
     @classmethod
