@@ -66,10 +66,9 @@ def main(cfg):
     save_cfg = cfg['save']
 
     # Training loss
-    total_train_loss = []
+    total_g_loss = []
+    total_d_loss = []
     total_start_time = int(time.time())
-    
-    min_loss = 1e4
     
     for current_epoch in range(1, hp_cfg['epochs']+1):
         print("=======================================================")
@@ -77,19 +76,18 @@ def main(cfg):
         
         # Training One Epoch
         start_time = int(time.time())
-        train_d_loss, trian_d_loss = train_one_epoch(model, train_dl, optimizer, task_cfg, device)
+        d_loss, g_loss = train_one_epoch(model, train_dl, optimizer, task_cfg, device)
         elapsed_time = int(time.time() - start_time)
         print(f"Train Time: {elapsed_time//60:02d}m {elapsed_time%60:02d}s\n")
-
-        # Validation을 따로 하지는 않을 것. 추후에 FID, IS를 고려할 수 있으나, 지금은 생략.
-        # val_loss = validate(model, val_dl, loss_fn, scheduler, task_cfg, device) # input args
-
-        if train_loss[0] < min_loss and current_epoch > 50:
-            min_loss = train_loss[0]
+        
+        if current_epoch % 10 == 0:
             save_model_ckpt(model, save_cfg['name'], current_epoch, save_cfg['weights_path'])
-
-        total_train_loss.append(train_loss)
-        save_loss_ckpt(save_cfg['name'], total_train_loss, save_cfg['loss_path'])
+            
+        total_g_loss.append(g_loss)
+        total_d_loss.append(d_loss)
+        save_loss_ckpt(save_cfg['name'], "generator", total_g_loss, save_cfg['loss_path'])
+        save_loss_ckpt(save_cfg['name'], "discriminator", total_d_loss, save_cfg['loss_path'])
+    save_model_ckpt(model, save_cfg['name'], current_epoch, save_cfg['weights_path'])
 
     total_elapsed_time = int(time.time()) - total_start_time
     print(f"<Total Train Time: {total_elapsed_time//60:02d}m {total_elapsed_time%60:02d}s>")

@@ -14,9 +14,9 @@ def train_one_epoch(model, dataloader, optimizer, task_cfg, device):
          
         if task_cfg['object'] == 'adversarial_learning':
             print(f"\rTraining: {100*batch_idx/len(dataloader):.2f}%, "
-                  f"Generator Loss: {sum(total_g_loss)/len(total_g_loss):.6f}, "
-                  f"Discriminator Loss: {sum(total_d_loss)/len(total_d_loss):.6f}", end="")
+                  f"Discriminator Loss: {sum(total_d_loss)/len(total_d_loss):.6f}, "
+                  f"Generator Loss: {sum(total_g_loss)/len(total_g_loss):.6f}", end="")
     print()
     
     if task_cfg['object'] == 'adversarial_learning':
-        return [sum(total_g_loss)/len(total_g_loss), sum(total_d_loss)/len(total_d_loss)]
+        return [sum(total_d_loss)/len(total_d_loss), sum(total_g_loss)/len(total_g_loss)]
