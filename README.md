@@ -28,6 +28,23 @@ python subtasks/03_grid_generate/exec.py -o adam
   </tr>
 </table>
 
+### 1. Why are all the generated results the same with SGD? (🌀Mode Collapse🌀)
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="assets/loss_curve/loss_curve_adam.jpg" width="500"><br>
+      <em>(a) Optimizer: Adam</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/loss_curve/loss_curve_sgd.jpg" width="500"><br>
+      <em>(b) Optimizer: SGD <b>(Mode Collapse)</b></em>
+    </td>
+  </tr>
+</table>
+
 # References
 * Repository
     
