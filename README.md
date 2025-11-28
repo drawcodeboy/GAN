@@ -33,13 +33,11 @@ python subtasks/03_grid_generate/exec.py -o adam
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/loss_curve/loss_curve_adam.jpg" width="500"><br>
+      <img src="assets/loss_curve/loss_curve_adam.jpg" width="300"><br>
       <em>(a) Optimizer: Adam</em>
     </td>
-  </tr>
-  <tr>
     <td align="center">
-      <img src="assets/loss_curve/loss_curve_sgd.jpg" width="500"><br>
+      <img src="assets/loss_curve/loss_curve_sgd.jpg" width="300"><br>
       <em>(b) Optimizer: SGD <b>(Mode Collapse)</b></em>
     </td>
   </tr>
