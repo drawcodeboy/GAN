@@ -1,4 +1,4 @@
-title: Train GAN / MNIST
+title: Train GAN / MNIST (with SGD)
 
 device: &device cuda:1
 parallel: false
@@ -20,13 +20,12 @@ model:
 
 hyperparameters:
   optim: SGD
-  momentum: 0.9
   gen_lr: 0.0002
-  disc_lr: 0.00002
+  disc_lr: 0.0002
   epochs: 200
-  batch_size: 100
+  batch_size: 64
 
 save:
-  name: gan.mnist
+  name: gan.mnist.sgd
   weights_path: saved/weights
   loss_path: saved/loss

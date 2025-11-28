@@ -49,10 +49,15 @@ def main(cfg):
     
     # Optimizer
     optimizer = None
-    if hp_cfg['optim'] == "SGD" and model_cfg['name'] in ['GAN']:
+    if hp_cfg['optim'] == "Adam" and model_cfg['name'] in ['GAN']:
         optimizer = {
-            'd_optim': optim.SGD(model.discriminator.parameters(), lr=hp_cfg['disc_lr'], momentum=hp_cfg['momentum']),
-            'g_optim': optim.SGD(model.generator.parameters(), lr=hp_cfg['gen_lr'], momentum=hp_cfg['momentum'])
+            'd_optim': optim.Adam(model.discriminator.parameters(), lr=hp_cfg['disc_lr'], betas=(0.5, 0.999)),
+            'g_optim': optim.Adam(model.generator.parameters(), lr=hp_cfg['gen_lr'], betas=(0.5, 0.999))
+        }
+    elif hp_cfg['optim'] == 'SGD' and model_cfg['name'] in ['GAN']:
+        optimizer = {
+            'd_optim': optim.SGD(model.discriminator.parameters(), lr=hp_cfg['disc_lr']),
+            'g_optim': optim.SGD(model.generator.parameters(), lr=hp_cfg['gen_lr'])
         }
     
     task_cfg = cfg['task']
@@ -78,8 +83,8 @@ def main(cfg):
             
         total_g_loss.append(g_loss)
         total_d_loss.append(d_loss)
-        save_loss_ckpt(save_cfg['name'], "generator", total_g_loss, save_cfg['loss_path'])
-        save_loss_ckpt(save_cfg['name'], "discriminator", total_d_loss, save_cfg['loss_path'])
+        save_loss_ckpt(save_cfg['name'], f"generator", total_g_loss, save_cfg['loss_path'])
+        save_loss_ckpt(save_cfg['name'], f"discriminator", total_d_loss, save_cfg['loss_path'])
     save_model_ckpt(model, save_cfg['name'], current_epoch, save_cfg['weights_path'])
 
     total_elapsed_time = int(time.time()) - total_start_time
