@@ -18,26 +18,32 @@ python subtasks/03_grid_generate/exec.py -o adam
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/generation_results_mnist_grid/generated_samples_adam.jpg" width="300"><br>
+      <img src="assets/generation_results_mnist_grid/generated_samples_adam.jpg" width="320"><br>
       <em>(a) Optimizer: Adam</em>
     </td>
     <td align="center">
-      <img src="assets/generation_results_mnist_grid/generated_samples_sgd.jpg" width="300"><br>
+      <img src="assets/generation_results_mnist_grid/generated_samples_sgd.jpg" width="320"><br>
       <em>(b) Optimizer: SGD <b>(Mode Collapse)</b></em>
     </td>
   </tr>
 </table>
 
-### 1. Why are all the generated results the same with SGD? (🌀Mode Collapse🌀)
+### 1. Why are all the generated results the same with SGD? (🌀 <b>Mode Collapse</b> 🌀)
+
+* When trained with SGD, the discriminator fails to learn at a rate comparable to the generator. SGD provides very limited updates in regions where the gradient magnitude is small and is highly sensitive to stochastic noise. ⭐ <b>As a result, once the generator discovers a pattern that the discriminator currently classifies as real, the discriminator does not receive sufficiently strong gradients to learn this pattern as fake. Consequently, the discriminator continues to classify the pattern as real.
+
+* Under this imbalance, the generator repeatedly produces the same pattern, since it consistently yields a low loss. This iterative reinforcement ultimately drives all generated samples toward a single mode, leading to severe mode collapse. </b> ⭐ 
+
+* In contrast, Adam’s adaptive learning rates and momentum allow the discriminator to update reliably even in flat or low-gradient regions. This enables the discriminator to quickly learn the generator’s repeated pattern as fake, pushing the generator away from that mode. As a result, training becomes more stable and the generator explores a more diverse set of outputs, preventing collapse.
 
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/loss_curve/loss_curve_adam.jpg" width="300"><br>
+      <img src="assets/loss_curve/loss_curve_adam.jpg" width="370"><br>
       <em>(a) Optimizer: Adam</em>
     </td>
     <td align="center">
-      <img src="assets/loss_curve/loss_curve_sgd.jpg" width="300"><br>
+      <img src="assets/loss_curve/loss_curve_sgd.jpg" width="370"><br>
       <em>(b) Optimizer: SGD <b>(Mode Collapse)</b></em>
     </td>
   </tr>
